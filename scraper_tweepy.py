@@ -4,8 +4,9 @@
 import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
+import json
 
-def scraper_tweepy(dict,output,begin_date):
+def scraper_tweepy(dict,df1,begin_date,marque):
 
     access_token = '1267842704739835907-04jDrMDj3zwXIDTDQ57nBLUBb036Yk'
     access_token_secret = 'KJI92QvsZuUFxJWVyjdwenr2iywChWG2Sr7dk0u84zwCp'
@@ -23,7 +24,7 @@ def scraper_tweepy(dict,output,begin_date):
 
     for tag in dict:
 
-        for tweet in tweepy.Cursor(api.search, q=tag, count=450, since=begin_date).items(50000):
+        for tweet in tweepy.Cursor(api.search, q=tag, count=450, since=begin_date).items(5000):
 
             print(count)
             count += 1
@@ -44,5 +45,7 @@ def scraper_tweepy(dict,output,begin_date):
     df = pd.DataFrame(tweets,
                       columns=['created_at', 'tweet_id', 'tweet_text', 'screen_name', 'name', 'account_creation_date',
                                'urls','language'])
+    df['marque']=marque
+    df=pd.concat([df1, df], ignore_index=True)
 
-    df.to_csv(path_or_buf=output, index=False)
+    return df
